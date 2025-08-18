@@ -31,7 +31,7 @@ Perfect for **learning, practicing, and hackathons! 🚀**
 
 ## 🛠️ Tech Stack
 
-- ⚡ **React.js** — Frontend framework  
+- ⚡ **NEXT.JS** — Frontend framework  
 - 🎨 **Tailwind CSS** — Styling & responsive design  
 - 🤖 **Groq AI** — Quiz question generation  
 - 🎬 **Framer Motion** — Smooth animations  
