@@ -1,7 +1,9 @@
-    import React, { useEffect, useState } from "react";
-import Question from './Question';
+   import React, { useEffect, useState } from "react";
+import Question from "./Question";
 import Result from "./Result";
+import { motion } from "framer-motion";
 
+// Fetch Questions
 async function fetchAIQuestions({ topic, topic2, numQuestions, difficulty }) {
   const GROQ_API_KEY = topic2;
 
@@ -60,6 +62,9 @@ export default function Quiz({ settings, onRestart }) {
   const [finished, setFinished] = useState(false);
   const [answerFeedback, setAnswerFeedback] = useState(null);
 
+  // NEW: optional voice toggle
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+
   useEffect(() => {
     setLoading(true);
     setError("");
@@ -91,6 +96,7 @@ export default function Quiz({ settings, onRestart }) {
       setAnswerFeedback("wrong");
     }
 
+    // Wait 3s instead of 1.5s → shows correct answer clearly
     setTimeout(() => {
       setAnswerFeedback(null);
 
@@ -99,7 +105,7 @@ export default function Quiz({ settings, onRestart }) {
       } else {
         setCurrentIdx((idx) => idx + 1);
       }
-    }, 1500);
+    }, 3000);
   }
 
   const getBackgroundClass = () => {
@@ -107,6 +113,21 @@ export default function Quiz({ settings, onRestart }) {
     if (answerFeedback === "wrong") return "bg-red-800";
     return "bg-gray-800";
   };
+
+  // --- TTS (Future: Murf integration)
+  const speak = (text) => {
+    if (!voiceEnabled) return;
+    const synth = window.speechSynthesis;
+    if (synth.speaking) synth.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    synth.speak(utter);
+  };
+
+  useEffect(() => {
+    if (questions.length && voiceEnabled) {
+      speak(`Question ${currentIdx + 1}. ${questions[currentIdx].question}`);
+    }
+  }, [currentIdx, questions, voiceEnabled]);
 
   if (loading)
     return (
@@ -137,6 +158,16 @@ export default function Quiz({ settings, onRestart }) {
     <div
       className={`p-8 rounded-lg shadow-md w-full sm:w-3/4 md:w-2/3 lg:w-1/2 transition-colors duration-500 ${getBackgroundClass()}`}
     >
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold text-white">Question {currentIdx + 1}</h2>
+        <button
+          onClick={() => setVoiceEnabled((v) => !v)}
+          className="px-3 py-1 rounded bg-blue-600 text-white text-sm hover:bg-blue-700"
+        >
+          {voiceEnabled ? "🔊 Voice ON" : "🔇 Voice OFF"}
+        </button>
+      </div>
+
       <Question
         question={q.question}
         options={q.options}
@@ -162,7 +193,10 @@ export default function Quiz({ settings, onRestart }) {
       </div>
 
       {answerFeedback && (
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
           className={`mt-6 text-center font-bold ${
             answerFeedback === "correct" ? "text-green-400" : "text-red-400"
           }`}
@@ -174,12 +208,13 @@ export default function Quiz({ settings, onRestart }) {
               <div>✗ Wrong!</div>
               <div className="mt-1 text-sm text-gray-200">
                 Correct answer:{" "}
-                <span className="font-semibold">{q.correct_answer}</span>
+                <span className="font-semibold text-white">{q.correct_answer}</span>
               </div>
             </>
           )}
-        </div>
+        </motion.div>
       )}
     </div>
   );
-    }
+}
+
