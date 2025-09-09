@@ -202,7 +202,7 @@ export default function InfoPage() {
                   </div>
                   <div className="bg-gray-900 rounded-xl p-4">
                     <p className="text-sm text-gray-400">Prime</p>
-                    <p className="text-2xl font-semibold">Proslan Key</p>
+                    <p className="text-2xl font-semibold">Personal Key</p>
                   </div>
                 </motion.div>
 
