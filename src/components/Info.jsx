@@ -166,10 +166,10 @@ export default function InfoPage() {
 
                 <div className="flex items-center gap-3">
                   <button onClick={() => navigator("/Sign")} className="px-5 py-3 bg-yellow-400 text-black rounded-md font-semibold hover:scale-[1.02] transition-transform">
-                    Get Started
+                    Get Started(Available Soon,Not Click)
                   </button>
                   <button onClick={() => navigator("/Login")} className="px-5 py-3 border border-gray-700 rounded-md text-gray-300 hover:border-gray-500">
-                    Login
+                    Login(Available Soon,Not Click)
                   </button>
                 </div>
 
